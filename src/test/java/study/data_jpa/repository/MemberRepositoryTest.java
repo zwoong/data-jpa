@@ -148,7 +148,5 @@ class MemberRepositoryTest {
     memberRepository.save(m2);
 
     Optional<Member> aaa = memberRepository.findOptionalByUsername("AAA");
-
-
   }
 }
