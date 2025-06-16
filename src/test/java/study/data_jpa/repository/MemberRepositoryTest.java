@@ -2,7 +2,8 @@ package study.data_jpa.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.awt.print.Pageable;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.transaction.annotation.Transactional;
 import study.data_jpa.dto.MemberDto;
 import study.data_jpa.entity.Member;
@@ -25,6 +25,8 @@ class MemberRepositoryTest {
 
   @Autowired MemberRepository memberRepository;
   @Autowired TeamRepository teamRepository;
+  @PersistenceContext
+  EntityManager em;
 
   @Test
   public void testMember() {
@@ -184,5 +186,22 @@ class MemberRepositoryTest {
 
     System.out.println("totalElements = " + totalElements);
 
+  }
+
+  @Test
+  public void bulkUpdate() {
+    memberRepository.save(new Member("member1", 10));
+    memberRepository.save(new Member("member2", 19));
+    memberRepository.save(new Member("member3", 20));
+    memberRepository.save(new Member("member4", 21));
+    memberRepository.save(new Member("member5", 40));
+
+    int resultCount = memberRepository.bulkAgePlus(20);
+
+    List<Member> result = memberRepository.findByUsername("member5");
+    Member member5 = result.get(0);
+    System.out.println("member5 = " + member5.getAge());
+
+    assertThat(resultCount).isEqualTo(3);
   }
 }

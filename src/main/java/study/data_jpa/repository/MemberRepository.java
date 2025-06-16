@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import study.data_jpa.dto.MemberDto;
@@ -34,4 +35,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   Optional<Member> findOptionalByUsername(String username); // 단건 Optional
 
   Page<Member> findByAge(int age, PageRequest pageRequest);
+
+  @Modifying(clearAutomatically = true)
+  @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
+  int bulkAgePlus(@Param("age") int age);
 }
