@@ -15,7 +15,7 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Team {
+public class Team extends JpaBaseEntity {
 
   @Id @GeneratedValue
   @Column(name = "team_id")
