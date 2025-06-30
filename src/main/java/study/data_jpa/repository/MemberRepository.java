@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -60,4 +61,10 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
   List<Member> findLockByUsername(String username);
 
   List<NestedClosedProjections> findProjectionsByUsername(@Param("username") String username);
+
+  @Query(value = "select * from member where username = ?", nativeQuery = true)
+  Member findByNativeQuery(String username);
+
+  @Query(value = "select m.member_id as id, m.username, t.name as teamName from member m left join team t", countQuery = "select count(*) from member", nativeQuery = true)
+  Page<MemberProjection> findByNativeProjection(Pageable pageable);
 }
